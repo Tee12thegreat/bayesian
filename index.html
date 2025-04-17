@@ -7,510 +7,337 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mathjs@11.5.0/lib/browser/math.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js"></script>
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --tertiary-color: #1abc9c;
-            --background-color: #f8f9fa;
-            --card-color: #ffffff;
-            --text-color: #333333;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--background-color);
-            color: var(--text-color);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            border-radius: 0 0 10px 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        h1 {
-            margin: 0;
-            font-size: 2.2rem;
-        }
-        
-        .subtitle {
-            margin-top: 5px;
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-        
-        .card {
-            background-color: var(--card-color);
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-        
-        .card-title {
-            color: var(--primary-color);
-            margin-top: 0;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-        
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-family: inherit;
-        }
-        
-        button {
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: background-color 0.3s;
-        }
-        
-        button:hover {
-            background-color: #2980b9;
-        }
-        
-        .btn-tertiary {
-            background-color: var(--tertiary-color);
-        }
-        
-        .btn-tertiary:hover {
-            background-color: #16a085;
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .results-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        
-        .chart-container {
-            flex: 1;
-            min-width: 300px;
-            height: 400px;
-            position: relative;
-        }
-        
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        
-        .data-table th, .data-table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        
-        .data-table th {
-            background-color: #f2f2f2;
-        }
-        
-        .data-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        
-        .tabs {
-            display: flex;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
-            border-bottom: none;
-            margin-right: 5px;
-            border-radius: 5px 5px 0 0;
-        }
-        
-        .tab.active {
-            background-color: white;
-            border-bottom: 1px solid white;
-            margin-bottom: -1px;
-            font-weight: bold;
-            color: var(--secondary-color);
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .metrics {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .metric-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            flex: 1;
-            min-width: 200px;
-            text-align: center;
-        }
-        
-        .metric-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--secondary-color);
-            margin: 10px 0;
-        }
-        
-        .metric-title {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 5px;
-        }
-        
-        .asset-inputs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .asset-input {
-            flex: 1;
-            min-width: 150px;
-        }
-        
-        @media screen and (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .results-container {
-                flex-direction: column;
-            }
-            
-            .chart-container {
-                height: 300px;
-            }
-            
-            .button-group {
-                flex-direction: column;
-            }
-            
-            button {
-                width: 100%;
-            }
-        }
-        
-        .loader {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--secondary-color);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 2s linear infinite;
-            margin: 20px auto;
-            display: none;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        #portfolioComparison {
-            overflow-x: auto;
-        }
-        
-        .matrix-input {
-            width: 100%;
-            height: 150px;
-            font-family: monospace;
-        }
-        
-        .alert {
-            padding: 10px;
-            background-color: #f8d7da;
-            color: #721c24;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            display: none;
-        }
-        
-        .info-icon {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            background-color: #ccc;
-            color: white;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 20px;
-            margin-left: 5px;
-            cursor: help;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 250px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 10px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.9rem;
-            font-weight: normal;
-        }
-        
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
+<style>
+    :root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --tertiary-color: #1abc9c;
+    --background-color: #f8f9fa;
+    --card-color: #ffffff;
+    --text-color: #333333;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.chart-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+}
+
+.matrix-input {
+    font-family: monospace;
+    white-space: pre;
+}
+
+/* Correlation matrix styles */
+.correlation-matrix {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.correlation-matrix th, .correlation-matrix td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+}
+
+.correlation-matrix th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.correlation-cell {
+    min-width: 60px;
+}
+
+.heatmap-0 { background-color: #d1e7dd; }
+.heatmap-1 { background-color: #a3cfbb; }
+.heatmap-2 { background-color: #75b798; }
+.heatmap-3 { background-color: #479f76; }
+.heatmap-4 { background-color: #198754; color: white; }
+.heatmap--1 { background-color: #f8d7da; }
+.heatmap--2 { background-color: #f1aeb5; }
+.heatmap--3 { background-color: #ea868f; }
+.heatmap--4 { background-color: #e35d6a; color: white; }
+
+/* Tooltip styles */
+.tooltip-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-color: #6c757d;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 18px;
+    margin-left: 5px;
+    cursor: help;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chart-container {
+        height: 300px;
+    }
+    
+    .correlation-matrix {
+        font-size: 0.8rem;
+    }
+}
+</style>
 <body>
-    <header>
+    <header class="bg-primary text-white py-4">
         <div class="container">
-            <h1>Bayesian Portfolio Optimization Tool</h1>
-            <p class="subtitle"></p>
+            <h1 class="mb-1">Bayesian Portfolio Optimization Tool</h1>
+            <p class="subtitle mb-0">Addressing Parameter Uncertainty in Quantitative Asset Allocation</p>
         </div>
     </header>
     
-    <div class="container">
-        <div class="card">
-            <h2 class="card-title">Portfolio Configuration</h2>
-            
-            <div class="tabs">
-                <div class="tab active" data-tab="manual-input">Manual Input</div>
-                <div class="tab" data-tab="sample-data">Sample Data</div>
-                <div class="tab" data-tab="file-upload">Upload Data</div>
+    <div class="container my-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h2 class="card-title mb-0">Portfolio Configuration</h2>
             </div>
-            
-            <div class="tab-content active" id="manual-input">
-                <div class="form-group">
-                    <label for="numAssets">Number of Assets:
-                        <span class="tooltip"><span class="info-icon">?</span>
-                            <span class="tooltiptext">Enter the number of assets in your portfolio (2-10)</span>
-                        </span>
-                    </label>
-                    <input type="number" id="numAssets" name="numAssets" min="2" max="10" value="3">
-                    <button id="generateInputs" class="btn-tertiary" style="margin-top: 10px;">Generate Inputs</button>
+            <div class="card-body">
+                <ul class="nav nav-tabs mb-3" id="configTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="manual-tab" data-bs-toggle="tab" data-bs-target="#manual" type="button">Manual Input</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="sample-tab" data-bs-toggle="tab" data-bs-target="#sample" type="button">Sample Data</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload" type="button">Upload Data</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="configTabsContent">
+                    <div class="tab-pane fade show active" id="manual" role="tabpanel">
+                        <div class="mb-3">
+                            <label for="numAssets" class="form-label">Number of Assets:</label>
+                            <input type="number" id="numAssets" class="form-control" min="2" max="10" value="3">
+                            <button id="generateInputs" class="btn btn-primary mt-2">Generate Inputs</button>
+                        </div>
+                        
+                        <div id="assetInputs" class="row g-3 mb-3"></div>
+                        
+                        <div class="mb-3" id="returnsMatrixContainer">
+                            <label for="returnsMatrix" class="form-label">Expected Returns Vector (annual %):</label>
+                            <textarea id="returnsMatrix" class="form-control matrix-input" rows="3" placeholder="5.2, 8.3, 4.1"></textarea>
+                        </div>
+                        
+                        <div class="mb-3" id="covarianceMatrixContainer">
+                            <label for="covarianceMatrix" class="form-label">Covariance Matrix (annual %):</label>
+                            <textarea id="covarianceMatrix" class="form-control matrix-input" rows="5" placeholder="100, 30, 20&#10;30, 200, 15&#10;20, 15, 80"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane fade" id="sample" role="tabpanel">
+                        <div class="mb-3">
+                            <label for="sampleDataset" class="form-label">Select Sample Dataset:</label>
+                            <select id="sampleDataset" class="form-select">
+                                <option value="stocks">US Stocks: Tech, Finance, Healthcare (3 assets)</option>
+                                <option value="global">Global Portfolio: US, Europe, Asia, Bonds (4 assets)</option>
+                                <option value="sectors">Market Sectors: Tech, Finance, Energy, Consumer, Healthcare (5 assets)</option>
+                                <option value="zimbabwe">Zimbabwe Portfolio: DLTA, ECO, INN, NTFD, SIM (5 equities) + Gold, Maize, Oil (3 commodities)</option>
+                            </select>
+                            <button id="loadSampleData" class="btn btn-primary mt-2">Load Data</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane fade" id="upload" role="tabpanel">
+                        <div class="mb-3">
+                            <label for="csvFile" class="form-label">Upload CSV File:</label>
+                            <input type="file" id="csvFile" class="form-control" accept=".csv">
+                            <div class="form-text">CSV format: First column should be dates, following columns should be asset prices.</div>
+                            <button id="processFile" class="btn btn-primary mt-2">Process File</button>
+                        </div>
+                    </div>
                 </div>
                 
-                <div id="assetInputs" style="margin-top: 20px;">
-                    <!-- Asset inputs will be generated here -->
+                <div class="mb-3">
+                    <label for="priorStrength" class="form-label">Prior Strength:</label>
+                    <input type="range" id="priorStrength" class="form-range" min="0" max="100" value="50">
+                    <div class="d-flex justify-content-between">
+                        <span>Weak Prior</span>
+                        <span>Strong Prior</span>
+                    </div>
                 </div>
                 
-                <div class="form-group" id="returnsMatrixContainer" style="display: none;">
-                    <label for="returnsMatrix">Expected Returns Vector (annual %):</label>
-                    <textarea id="returnsMatrix" class="matrix-input" placeholder="5.2, 8.3, 4.1"></textarea>
+                <div class="mb-3">
+                    <label for="riskAversion" class="form-label">Risk Aversion:</label>
+                    <input type="range" id="riskAversion" class="form-range" min="1" max="10" value="4">
+                    <div class="d-flex justify-content-between">
+                        <span>Return Focus</span>
+                        <span>Risk Focus</span>
+                    </div>
                 </div>
                 
-                <div class="form-group" id="covarianceMatrixContainer" style="display: none;">
-                    <label for="covarianceMatrix">Covariance Matrix (annual %):</label>
-                    <textarea id="covarianceMatrix" class="matrix-input" placeholder="100, 30, 20
-30, 200, 15
-20, 15, 80"></textarea>
-                </div>
-            </div>
-            
-            <div class="tab-content" id="sample-data">
-                <div class="form-group">
-                    <label for="sampleDataset">Select Sample Dataset:</label>
-                    <select id="sampleDataset">
-                        <option value="stocks">US Stocks: Tech, Finance, Healthcare (3 assets)</option>
-                        <option value="global">Global Portfolio: US, Europe, Asia, Bonds (4 assets)</option>
-                        <option value="sectors">Market Sectors: Tech, Finance, Energy, Consumer, Healthcare (5 assets)</option>
+                <div class="border-top pt-3 mt-3">
+                    <h5>User Profile</h5>
+                    <div class="d-flex gap-2 mb-3">
+                        <input type="text" id="profileName" class="form-control flex-grow-1" placeholder="Profile name">
+                        <button id="saveProfileBtn" class="btn btn-success">Save Profile</button>
+                        <button id="loadProfileBtn" class="btn btn-primary">Load Profile</button>
+                    </div>
+                    <select id="profileSelect" class="form-select">
+                        <option value="">Select a saved profile</option>
                     </select>
-                    <button id="loadSampleData" class="btn-tertiary" style="margin-top: 10px;">Load Data</button>
-                </div>
-            </div>
-            
-            <div class="tab-content" id="file-upload">
-                <div class="form-group">
-                    <label for="csvFile">Upload CSV File:</label>
-                    <input type="file" id="csvFile" accept=".csv">
-                    <p style="font-size: 0.9rem; color: #666;">CSV format: First column should be dates, following columns should be asset prices.</p>
-                    <button id="processFile" class="btn-tertiary" style="margin-top: 10px;">Process File</button>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="priorStrength">Prior Strength: 
-                    <span class="tooltip"><span class="info-icon">?</span>
-                        <span class="tooltiptext">Controls how much the prior influences the final estimate. Higher values give more weight to prior beliefs.</span>
-                    </span>
-                </label>
-                <input type="range" id="priorStrength" name="priorStrength" min="0" max="100" value="50">
-                <div style="display: flex; justify-content: space-between;">
-                    <span>Weak Prior</span>
-                    <span>Strong Prior</span>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="riskAversion">Risk Aversion:
-                    <span class="tooltip"><span class="info-icon">?</span>
-                        <span class="tooltiptext">Higher values prioritize risk reduction over returns. Lower values focus more on maximizing returns.</span>
-                    </span>
-                </label>
-                <input type="range" id="riskAversion" name="riskAversion" min="1" max="10" value="4">
-                <div style="display: flex; justify-content: space-between;">
-                    <span>Return Focus</span>
-                    <span>Risk Focus</span>
-                </div>
-            </div>
-            
-            <div class="button-group">
-                <button id="optimizeBtn">Run Bayesian Optimization</button>
-                <button id="compareBtn" class="btn-tertiary">Compare with Traditional</button>
-                <button id="resetBtn" style="background-color: #e74c3c;">Reset</button>
-            </div>
-        </div>
-        
-        <div id="alertBox" class="alert"></div>
-        
-        <div id="resultsSection" style="display: none;">
-            <div class="card">
-                <h2 class="card-title">Optimization Results</h2>
-                
-                <div class="metrics">
-                    <div class="metric-card">
-                        <div class="metric-title">Expected Annual Return</div>
-                        <div class="metric-value" id="expectedReturn">--</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-title">Annual Volatility</div>
-                        <div class="metric-value" id="portfolioRisk">--</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-title">Sharpe Ratio</div>
-                        <div class="metric-value" id="sharpeRatio">--</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-title">Posterior Probability</div>
-                        <div class="metric-value" id="posteriorProb">--</div>
-                    </div>
                 </div>
                 
-                <div class="results-container">
-                    <div class="chart-container">
-                        <canvas id="allocationChart"></canvas>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="efficientFrontierChart"></canvas>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 20px;">
-                    <h3>Optimal Portfolio Weights</h3>
-                    <table class="data-table" id="weightsTable">
-                        <thead>
-                            <tr>
-                                <th>Asset</th>
-                                <th>Weight (%)</th>
-                                <th>Expected Contribution to Return (%)</th>
-                                <th>Contribution to Risk (%)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Table content will be generated dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="card" id="portfolioComparison" style="display: none;">
-                <h2 class="card-title">Bayesian vs. Traditional Optimization</h2>
-                
-                <div class="results-container">
-                    <div class="chart-container">
-                        <canvas id="comparisonChart"></canvas>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="stabilityChart"></canvas>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 20px;">
-                    <h3>Comparison of Methods</h3>
-                    <table class="data-table" id="comparisonTable">
-                        <thead>
-                            <tr>
-                                <th>Metric</th>
-                                <th>Bayesian Portfolio</th>
-                                <th>Traditional (Markowitz)</th>
-                                <th>Difference</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Table content will be generated dynamically -->
-                        </tbody>
-                    </table>
+                <div class="d-flex gap-2 mt-4">
+                    <button id="optimizeBtn" class="btn btn-primary flex-grow-1">Run Bayesian Optimization</button>
+                    <button id="compareBtn" class="btn btn-outline-primary">Compare with Traditional</button>
+                    <button id="resetBtn" class="btn btn-danger">Reset</button>
                 </div>
             </div>
         </div>
         
-        <div class="loader" id="loader"></div>
+        <div id="alertBox" class="alert alert-danger d-none"></div>
+        
+        <div id="resultsSection" class="d-none">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h2 class="card-title mb-0">Optimization Results</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h6 class="card-subtitle mb-2 text-muted">Expected Annual Return</h6>
+                                    <div class="metric-value fs-3 fw-bold text-primary" id="expectedReturn">--</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h6 class="card-subtitle mb-2 text-muted">Annual Volatility</h6>
+                                    <div class="metric-value fs-3 fw-bold text-primary" id="portfolioRisk">--</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h6 class="card-subtitle mb-2 text-muted">Sharpe Ratio</h6>
+                                    <div class="metric-value fs-3 fw-bold text-primary" id="sharpeRatio">--</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h6 class="card-subtitle mb-2 text-muted">Posterior Probability</h6>
+                                    <div class="metric-value fs-3 fw-bold text-primary" id="posteriorProb">--</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <canvas id="allocationChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <canvas id="efficientFrontierChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4>Optimal Portfolio Weights</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" id="weightsTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Asset</th>
+                                        <th>Weight (%)</th>
+                                        <th>Expected Contribution to Return (%)</th>
+                                        <th>Contribution to Risk (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4>Asset Correlations</h4>
+                        <div id="correlationMatrixContainer" class="mb-3">
+                            <!-- Correlation matrix will be generated here -->
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="correlationHeatmap"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm d-none" id="portfolioComparison">
+                <div class="card-header bg-white">
+                    <h2 class="card-title mb-0">Bayesian vs. Traditional Optimization</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <canvas id="comparisonChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <canvas id="stabilityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4>Comparison of Methods</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" id="comparisonTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Metric</th>
+                                        <th>Bayesian Portfolio</th>
+                                        <th>Traditional (Markowitz)</th>
+                                        <th>Difference</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="loader" class="text-center my-4 d-none">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Optimizing portfolio...</p>
+        </div>
     </div>
-    
-    <script src="bayesianOptimizer.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
