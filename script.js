@@ -10,6 +10,29 @@ let comparisonChart = null;
 let stabilityChart = null;
 let correlationHeatmap = null;
 
+// Check for user session on app start
+document.addEventListener('DOMContentLoaded', function() {
+    const currentUser = sessionStorage.getItem('currentUser');
+    
+    if (!currentUser) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // Display current user
+    document.getElementById('currentUsername').textContent = currentUser;
+    
+    // Logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        sessionStorage.removeItem('currentUser');
+        window.location.href = 'login.html';
+    });
+
+    // Rest of your existing initialization code...
+    initializeUserSystem();
+    // ...
+});
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize UI elements
@@ -29,6 +52,135 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Generate initial inputs for default 3 assets
     generateAssetInputs();
+});
+
+// User Management Functions
+function initializeUserSystem() {
+    // Load existing users and current session
+    loadUserData();
+    
+    // Setup event listeners for user controls
+    document.getElementById('logoutBtn').addEventListener('click', logoutUser);
+    
+    // Check for active session on page load
+    checkActiveSession();
+}
+
+function loadUserData() {
+    const usersData = localStorage.getItem('portfolioUsers');
+    const portfoliosData = localStorage.getItem('portfolioPortfolios');
+    
+    if (usersData) {
+        appState.users = JSON.parse(usersData);
+    }
+    
+    if (portfoliosData) {
+        appState.portfolios = JSON.parse(portfoliosData);
+    }
+}
+
+function checkActiveSession() {
+    const currentUser = sessionStorage.getItem('currentUser');
+    if (currentUser && appState.users[currentUser]) {
+        setCurrentUser(currentUser);
+    }
+}
+
+function setCurrentUser(username) {
+    appState.currentUser = username;
+    sessionStorage.setItem('currentUser', username);
+    
+    // Update UI
+    document.getElementById('usernameDisplay').textContent = username;
+    document.getElementById('currentUserDisplay').classList.remove('d-none');
+    document.getElementById('logoutBtn').classList.remove('d-none');
+    
+    // Load user's saved portfolios
+    updateProfileSelect();
+}
+
+function logoutUser() {
+    appState.currentUser = null;
+    sessionStorage.removeItem('currentUser');
+    
+    // Update UI
+    document.getElementById('currentUserDisplay').classList.add('d-none');
+    document.getElementById('logoutBtn').classList.add('d-none');
+    document.getElementById('profileSelect').innerHTML = '<option value="">Select a saved profile</option>';
+    
+    // Clear profile name field
+    document.getElementById('profileName').value = '';
+}
+
+// Modified save function with user check
+function saveCurrentProfile() {
+    const profileName = document.getElementById('profileName').value.trim();
+    
+    if (!profileName) {
+        showAlert('Please enter a profile name');
+        return;
+    }
+
+    // If no user is logged in, use profile name as username
+    if (!appState.currentUser) {
+        createNewUser(profileName);
+    }
+
+    // Save the portfolio data
+    const portfolioData = {
+        assets: getCurrentAssetData(),
+        returns: document.getElementById('returnsMatrix').value,
+        covariance: document.getElementById('covarianceMatrix').value,
+        priorStrength: document.getElementById('priorStrength').value,
+        riskAversion: document.getElementById('riskAversion').value,
+        timestamp: new Date().toISOString()
+    };
+
+    if (!appState.portfolios[appState.currentUser]) {
+        appState.portfolios[appState.currentUser] = {};
+    }
+
+    appState.portfolios[appState.currentUser][profileName] = portfolioData;
+    saveUserData();
+    updateProfileSelect();
+    
+    showAlert(`Profile "${profileName}" saved successfully`, 'success');
+}
+
+function createNewUser(username) {
+    appState.users[username] = {
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString()
+    };
+    appState.currentUser = username;
+    setCurrentUser(username);
+    saveUserData();
+}
+
+function saveUserData() {
+    localStorage.setItem('portfolioUsers', JSON.stringify(appState.users));
+    localStorage.setItem('portfolioPortfolios', JSON.stringify(appState.portfolios));
+}
+
+// Modified updateProfileSelect to show only current user's portfolios
+function updateProfileSelect() {
+    const select = document.getElementById('profileSelect');
+    select.innerHTML = '<option value="">Select a saved profile</option>';
+    
+    if (appState.currentUser && appState.portfolios[appState.currentUser]) {
+        Object.keys(appState.portfolios[appState.currentUser]).forEach(profile => {
+            const option = document.createElement('option');
+            option.value = profile;
+            option.textContent = profile;
+            select.appendChild(option);
+        });
+    }
+}
+
+// Initialize the user system when your app starts
+document.addEventListener('DOMContentLoaded', function() {
+    initializeUserSystem();
+    // Your other initialization code...
 });
 
 // Generate input fields for assets based on user selection

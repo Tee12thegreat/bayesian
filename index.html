@@ -10,103 +10,124 @@
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --tertiary-color: #1abc9c;
+            --background-color: #f8f9fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+
+        .nav-link.active {
+            background-color: var(--secondary-color);
+            color: white !important;
+        }
+
+        .nav-link {
+            color: var(--primary-color);
+        }
+
+        .user-controls {
+            margin-left: auto;
+        }
+
+        #currentUserDisplay {
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
 </head>
-<style>
-    :root {
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --tertiary-color: #1abc9c;
-    --background-color: #f8f9fa;
-    --card-color: #ffffff;
-    --text-color: #333333;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-}
-
-.chart-container {
-    position: relative;
-    height: 400px;
-    width: 100%;
-}
-
-.matrix-input {
-    font-family: monospace;
-    white-space: pre;
-}
-
-/* Correlation matrix styles */
-.correlation-matrix {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-}
-
-.correlation-matrix th, .correlation-matrix td {
-    padding: 8px;
-    text-align: center;
-    border: 1px solid #dee2e6;
-}
-
-.correlation-matrix th {
-    background-color: #f8f9fa;
-    font-weight: bold;
-}
-
-.correlation-cell {
-    min-width: 60px;
-}
-
-.heatmap-0 { background-color: #d1e7dd; }
-.heatmap-1 { background-color: #a3cfbb; }
-.heatmap-2 { background-color: #75b798; }
-.heatmap-3 { background-color: #479f76; }
-.heatmap-4 { background-color: #198754; color: white; }
-.heatmap--1 { background-color: #f8d7da; }
-.heatmap--2 { background-color: #f1aeb5; }
-.heatmap--3 { background-color: #ea868f; }
-.heatmap--4 { background-color: #e35d6a; color: white; }
-
-/* Tooltip styles */
-.tooltip-icon {
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    background-color: #6c757d;
-    color: white;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 18px;
-    margin-left: 5px;
-    cursor: help;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .chart-container {
-        height: 300px;
-    }
-    
-    .correlation-matrix {
-        font-size: 0.8rem;
-    }
-}
-</style>
 <body>
-    <header class="bg-primary text-white py-4">
-        <div class="container">
-            <h1 class="mb-1">Bayesian Portfolio Optimization Tool</h1>
-            <p class="subtitle mb-0">Addressing Parameter Uncertainty in Quantitative Asset Allocation</p>
+    <!-- Navigation Pane -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Portfolio Optimizer</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#portfolioConfig">Portfolio Configuration</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#resultsSection">Results</a>
+                    </li>
+                </ul>
+                <div class="user-controls d-flex align-items-center ms-auto">
+                    <div id="currentUserDisplay" class="text-white d-none">Logged in as: <span id="usernameDisplay"></span></div>
+                    <button id="logoutBtn" class="btn btn-sm btn-outline-light d-none">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="loginUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="loginUsername" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <header class="bg-primary text-white py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-1">Bayesian Portfolio Optimization Tool</h1>
+                <p class="subtitle mb-0">Addressing Parameter Uncertainty in Quantitative Asset Allocation</p>
+            </div>
+            <div id="userInfo" class="d-flex align-items-center">
+                <div class="me-3">
+                    <span id="currentUsername"></span>
+                </div>
+                <button id="logoutBtn" class="btn btn-sm btn-outline-light">Logout</button>
+            </div>
         </div>
     </header>
-    
-    <div class="container my-4">
+
+    <div class="container my-4" id="portfolioConfig">
+        <!-- Existing content for portfolio configuration -->
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-white">
                 <h2 class="card-title mb-0">Portfolio Configuration</h2>
@@ -329,15 +350,59 @@ body {
             </div>
         </div>
         
-        <div id="loader" class="text-center my-4 d-none">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-2">Optimizing portfolio...</p>
+       
+    <div id="loader" class="text-center my-4 d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
+        <p class="mt-2">Optimizing portfolio...</p>
+    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            const currentUserDisplay = document.getElementById('currentUserDisplay');
+            const usernameDisplay = document.getElementById('usernameDisplay');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            // Check if user is logged in
+            const currentUser = sessionStorage.getItem('currentUser');
+            if (!currentUser) {
+                loginModal.show();
+            } else {
+                usernameDisplay.textContent = currentUser;
+                currentUserDisplay.classList.remove('d-none');
+                logoutBtn.classList.remove('d-none');
+            }
+
+            // Handle login form submission
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = document.getElementById('loginUsername').value;
+                const password = document.getElementById('loginPassword').value;
+
+                // Simple authentication (replace with real authentication logic)
+                if (username && password) {
+                    sessionStorage.setItem('currentUser', username);
+                    usernameDisplay.textContent = username;
+                    currentUserDisplay.classList.remove('d-none');
+                    logoutBtn.classList.remove('d-none');
+                    loginModal.hide();
+                } else {
+                    alert('Invalid credentials');
+                }
+            });
+
+            // Handle logout
+            logoutBtn.addEventListener('click', () => {
+                sessionStorage.removeItem('currentUser');
+                location.reload();
+            });
+        });
+    </script>
+    </script>
 </body>
 </html>
