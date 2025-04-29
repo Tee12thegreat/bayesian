@@ -112,18 +112,7 @@
 
     <!-- Main Content -->
     <header class="bg-primary text-white py-3">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div>
-                <h1 class="mb-1">Bayesian Portfolio Optimization Tool</h1>
-                <p class="subtitle mb-0">Addressing Parameter Uncertainty in Quantitative Asset Allocation</p>
-            </div>
-            <div id="userInfo" class="d-flex align-items-center">
-                <div class="me-3">
-                    <span id="currentUsername"></span>
-                </div>
-                <button id="logoutBtn" class="btn btn-sm btn-outline-light">Logout</button>
-            </div>
-        </div>
+       
     </header>
 
     <div class="container my-4" id="portfolioConfig">
@@ -150,7 +139,10 @@
                         <div class="mb-3">
                             <label for="numAssets" class="form-label">Number of Assets:</label>
                             <input type="number" id="numAssets" class="form-control" min="2" max="10" value="3">
-                            <button id="generateInputs" class="btn btn-primary mt-2">Generate Inputs</button>
+                            <div class="d-flex gap-2 mt-2">
+                                <button id="generateInputs" class="btn btn-primary">Generate Inputs</button>
+                                <button id="clearManualInputs" class="btn btn-outline-secondary">Clear All</button>
+                            </div>
                         </div>
                         
                         <div id="assetInputs" class="row g-3 mb-3"></div>
@@ -206,18 +198,7 @@
                         <span>Risk Focus</span>
                     </div>
                 </div>
-                
-                <div class="border-top pt-3 mt-3">
-                    <h5>User Profile</h5>
-                    <div class="d-flex gap-2 mb-3">
-                        <input type="text" id="profileName" class="form-control flex-grow-1" placeholder="Profile name">
-                        <button id="saveProfileBtn" class="btn btn-success">Save Profile</button>
-                        <button id="loadProfileBtn" class="btn btn-primary">Load Profile</button>
-                    </div>
-                    <select id="profileSelect" class="form-select">
-                        <option value="">Select a saved profile</option>
-                    </select>
-                </div>
+
                 
                 <div class="d-flex gap-2 mt-4">
                     <button id="optimizeBtn" class="btn btn-primary flex-grow-1">Run Bayesian Optimization</button>

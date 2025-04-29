@@ -184,6 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Generate input fields for assets based on user selection
+// Generate input fields for assets based on user selection
 function generateAssetInputs() {
     const numAssets = parseInt(document.getElementById('numAssets').value);
     const assetInputsDiv = document.getElementById('assetInputs');
@@ -202,15 +203,15 @@ function generateAssetInputs() {
                     <h5 class="card-title">Asset ${i + 1}</h5>
                     <div class="mb-3">
                         <label for="assetName${i}" class="form-label">Name:</label>
-                        <input type="text" id="assetName${i}" class="form-control" value="Asset ${i + 1}">
+                        <input type="text" id="assetName${i}" class="form-control" value="">
                     </div>
                     <div class="mb-3">
                         <label for="assetReturn${i}" class="form-label">Expected Return (%):</label>
-                        <input type="number" id="assetReturn${i}" class="form-control" step="0.1" value="${5 + i}">
+                        <input type="number" id="assetReturn${i}" class="form-control" step="0.1" value="">
                     </div>
                     <div class="mb-3">
                         <label for="assetVolatility${i}" class="form-label">Volatility (%):</label>
-                        <input type="number" id="assetVolatility${i}" class="form-control" step="0.1" value="${10 + i * 5}">
+                        <input type="number" id="assetVolatility${i}" class="form-control" step="0.1" value="">
                     </div>
                 </div>
             </div>
