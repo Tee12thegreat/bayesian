@@ -10,6 +10,11 @@ let comparisonChart = null;
 let stabilityChart = null;
 let correlationHeatmap = null;
 
+function safeValue(v) {
+    return (typeof v === "number" && !isNaN(v)) ? v.toFixed(2) : "";
+}
+
+
 // Check for user session on app start
 document.addEventListener('DOMContentLoaded', function() {
     const currentUser = sessionStorage.getItem('currentUser');
@@ -389,9 +394,12 @@ function processUploadedFile() {
             generateAssetInputs();
             
             for (let i = 0; i < numAssets; i++) {
-                document.getElementById(`assetName${i}`).value = assetNames[i];
-                document.getElementById(`assetReturn${i}`).value = (returns.mean[i] * 100).toFixed(2);
-                document.getElementById(`assetVolatility${i}`).value = (Math.sqrt(covMatrix[i][i]) * 100).toFixed(2);
+                document.getElementById(`assetName${i}`).value = assetNames[i] || "";
+
+                const safeValue = v => (isNaN(v) ? "" : v.toFixed(2));
+                document.getElementById(`assetReturn${i}`).value = safeValue(returns.mean[i] * 100);
+                document.getElementById(`assetVolatility${i}`).value = safeValue(Math.sqrt(covMatrix[i][i]) * 100);
+                
             }
             
             // Update matrices
