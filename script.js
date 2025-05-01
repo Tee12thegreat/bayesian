@@ -217,7 +217,7 @@ function generateAssetInputs() {
     assetInputsDiv.innerHTML = '';
     assetNames = [];
     
-    // Generate new inputs
+    // Generate new inputs - all fields will be empty
     for (let i = 0; i < numAssets; i++) {
         const assetDiv = document.createElement('div');
         assetDiv.className = 'col-md-4';
@@ -227,15 +227,15 @@ function generateAssetInputs() {
                     <h5 class="card-title">Asset ${i + 1}</h5>
                     <div class="mb-3">
                         <label for="assetName${i}" class="form-label">Name:</label>
-                        <input type="text" id="assetName${i}" class="form-control" value="">
+                        <input type="text" id="assetName${i}" class="form-control" placeholder="Enter asset name" value="">
                     </div>
                     <div class="mb-3">
                         <label for="assetReturn${i}" class="form-label">Expected Return (%):</label>
-                        <input type="number" id="assetReturn${i}" class="form-control" step="0.1" value="">
+                        <input type="number" id="assetReturn${i}" class="form-control" step="0.1" placeholder="Enter return" value="">
                     </div>
                     <div class="mb-3">
                         <label for="assetVolatility${i}" class="form-label">Volatility (%):</label>
-                        <input type="number" id="assetVolatility${i}" class="form-control" step="0.1" value="">
+                        <input type="number" id="assetVolatility${i}" class="form-control" step="0.1" placeholder="Enter volatility" value="">
                     </div>
                 </div>
             </div>
@@ -243,7 +243,7 @@ function generateAssetInputs() {
         assetInputsDiv.appendChild(assetDiv);
     }
     
-    // Generate empty matrices
+    // Clear matrices
     document.getElementById('returnsMatrix').value = '';
     document.getElementById('covarianceMatrix').value = '';
 
