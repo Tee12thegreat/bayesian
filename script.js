@@ -57,6 +57,25 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Generate initial inputs for default 3 assets
     generateAssetInputs();
+    // Add this to your event listeners
+    document.getElementById('clearManualInputs').addEventListener('click', clearManualInputs);
+
+    function clearManualInputs() {
+        const numAssets = parseInt(document.getElementById('numAssets').value);
+        
+        // Clear asset inputs
+        for (let i = 0; i < numAssets; i++) {
+            if (document.getElementById(`assetName${i}`)) {
+                document.getElementById(`assetName${i}`).value = '';
+                document.getElementById(`assetReturn${i}`).value = '';
+                document.getElementById(`assetVolatility${i}`).value = '';
+            }
+        }
+        
+        // Clear matrices
+        document.getElementById('returnsMatrix').value = '';
+        document.getElementById('covarianceMatrix').value = '';
+    }
 });
 
 // User Management Functions
@@ -223,6 +242,11 @@ function generateAssetInputs() {
         `;
         assetInputsDiv.appendChild(assetDiv);
     }
+    
+    // Generate empty matrices
+    document.getElementById('returnsMatrix').value = '';
+    document.getElementById('covarianceMatrix').value = '';
+
     
     // Generate default matrices
     generateDefaultMatrices(numAssets);
@@ -715,8 +739,11 @@ function displayResults(result) {
     createEfficientFrontierChart(expectedReturns, covarianceMatrix, optimalWeights);
     
     // Populate weights table
-    const weightsTable = document.getElementById('weightsTable').getElementsByTagName('tbody')[0];
+       const weightsTable = document.getElementById('weightsTable').getElementsByTagName('tbody')[0];
     weightsTable.innerHTML = '';
+    
+    // Calculate total portfolio return
+    const totalPortfolioReturn = result.portfolioReturn;
     
     for (let i = 0; i < assetNames.length; i++) {
         const row = weightsTable.insertRow();
@@ -727,18 +754,26 @@ function displayResults(result) {
         // Weight
         row.insertCell(1).textContent = (optimalWeights[i] * 100).toFixed(2) + '%';
         
-        // Contribution to return
+        // Contribution to return - now showing actual contribution percentage of total return
         const returnContribution = optimalWeights[i] * expectedReturns[i];
-        row.insertCell(2).textContent = (returnContribution * 100).toFixed(2) + '%';
+        const contributionPercentage = (returnContribution / totalPortfolioReturn) * 100;
+        row.insertCell(2).textContent = contributionPercentage.toFixed(2) + '% of total return';
         
-        // Contribution to risk (simplified)
+        // Contribution to risk (marginal contribution to risk)
         let riskContribution = 0;
         for (let j = 0; j < assetNames.length; j++) {
             riskContribution += optimalWeights[i] * optimalWeights[j] * covarianceMatrix[i][j];
         }
         riskContribution /= result.portfolioRisk; // Normalize by total risk
-        row.insertCell(3).textContent = (riskContribution * 100).toFixed(2) + '%';
+        row.insertCell(3).textContent = (riskContribution * 100).toFixed(2) + '% of total risk';
+
+         // Show results section
+        document.getElementById('resultsSection').classList.remove('d-none');
+        
+        // Scroll to results section
+        document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
     }
+
 }
 
 // Create allocation pie chart
@@ -1346,6 +1381,7 @@ function showAlert(message, type = 'error') {
     setTimeout(() => {
         alertBox.classList.add('d-none');
     }, 5000);
+
 }
 
 // User Profile Functions
